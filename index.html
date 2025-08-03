@@ -1,92 +1,137 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-    <title>Meu portfólio</title>
+  <meta charset="UTF-8" />
+  <title>Flashcards do Amigo</title>
+  <style>
+    body {
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      background: linear-gradient(to right, #fff3e0, #fce4ec);
+      text-align: center;
+      padding: 30px;
+      margin: 0;
+    }
+
+    h1 {
+      color: #d81b60;
+      font-size: 2.5em;
+      margin-bottom: 10px;
+    }
+
+    .score {
+      font-size: 18px;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .flashcard {
+      background-color: #fff;
+      border: 3px dashed #ff80ab;
+      border-radius: 15px;
+      max-width: 400px;
+      margin: 0 auto 20px;
+      padding: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .pergunta {
+      font-size: 20px;
+      color: #6a1b9a;
+      margin-bottom: 15px;
+    }
+
+    .resposta {
+      display: none;
+      margin: 10px 0;
+      color: #2e7d32;
+      font-weight: bold;
+    }
+
+    button {
+      background-color: #ffb74d;
+      border: none;
+      padding: 10px 20px;
+      margin: 5px;
+      font-size: 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background-color: #ffa000;
+    }
+
+    .footer {
+      margin-top: 40px;
+      color: #777;
+      font-size: 14px;
+    }
+  </style>
 </head>
-
 <body>
-    <header class="container text-center">
-        <img src="img/avatar-perfil.png" alt="avatar da Fernanda" class="rounded-circle" width="150" height="150"
-            srcset="">
-        <p class="lead">Eu sou Fernanda_</p>
-        <h1>Eu ensino Programação</h1>
-        <p>Sou Engenheira de Computação e Pedagoga. Ensino pensamento computacional para estudantes do Ensino
-            Fundamental e Médio. Ensino sobre pensamento computacional usando HTML, CSS e JavaScript. Veja os projetos
-            que já desenvolvi!</p>
-        <p>Minhas habilidades</p>
-        <div>
-            <p class="badge bg-secondary">HTML</p>
-            <p class="badge bg-secondary">CSS</p>
-            <p class="badge bg-secondary">JavaScript</p>
-            <p class="badge bg-secondary">Scratch</p>
-        </div>
-    </header>
-    <main class="container mt-5">
-        <h2>Meus projetos</h2>
-        <div class="row">
-            <!-- Projeto 1 -->
-            <div class="col-md-4">
-                <div class="card">
-                    <img src="img/projeto-1.png" class="card-img-top" alt="Imagem do projeto de biblioteca virtual">
-                    <div class="card-body">
-                        <h5 class="card-title">Minha Biblioteca: Uma Webpage Personalizada</h5>
-                        <p class="card-text">Este projeto é uma página web que apresenta uma lista dos meus livros
-                            favoritos, incluindo informações sobre os autores, datas de publicação e links para compra
-                            na Amazon. A página é estilizada com CSS para uma visualização agradável e usa fontes
-                            externas do Google Fonts.
-                        </p>
-                        <button type="button" class="btn btn-link">Veja o projeto</button>
-                    </div>
-                </div>
-            </div>
-            <!-- Projeto 2 -->
-            <div class="col-md-4">
-                <div class="card">
-                    <img src="img/projeto-2.png" class="card-img-top" alt="Imagem do projeto de biblioteca virtual">
-                    <div class="card-body">
-                        <h5 class="card-title">Decidindo o Futuro: Uma Jornada Interativa sobre a Inteligência
-                            Artificial</h5>
-                        <p class="card-text">Este projeto é um jogo interativo baseado em navegador que explora o
-                            impacto e as implicações da Inteligência Artificial (IA) na sociedade, permitindo que as
-                            pessoas jogadoras façam escolhas que influenciam o desenrolar de uma narrativa sobre o
-                            futuro da IA.</p>
-                        <button type="button" class="btn btn-link">Veja o projeto</button>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Projeto 3 -->
-            <div class="col-md-4">
-                <div class="card">
-                    <img src="img/projeto-3.png" class="card-img-top" alt="Imagem do projeto de biblioteca virtual">
-                    <div class="card-body">
-                        <h5 class="card-title">Explorando o Universo: Uma Aventura Interativa em Astronomia com Scratch
-                        </h5>
-                        <p class="card-text">EEste projeto Scratch cria uma experiência interativa educativa sobre
-                            astronomia, permitindo aos usuários explorar informações sobre constelações, eclipses, e a
-                            forma da Terra através de cenários dinâmicos e diálogos informativos.
-                        </p>
-                        <button type="button" class="btn btn-link">Veja o projeto</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
+  <h1>Flashcards do Amigo 🧠🎉</h1>
+  <div class="score">Pontuação: <span id="pontuacao">0</span></div>
 
-    <footer class="container py-5">
-        <h2>Entre em contato</h2>
-        <div>
-            <a href="https://github.com/femascheti">GitHub</a>
-        </div>
-        <p class="my-5 text-center">© Copyright 2024. Produzido por Fernanda Mascheti</p>
-    </footer>
+  <div class="flashcard" id="flashcard">
+    <div class="pergunta" id="pergunta">Carregando pergunta...</div>
+    <div class="resposta" id="resposta"></div>
+    <button onclick="mostrarResposta()">Mostrar Resposta</button>
+    <br />
+    <button onclick="respondeu(true)">Acertar ✅</button>
+    <button onclick="respondeu(false)">Errar ❌</button>
+  </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <div class="footer">Criado para estudos com carinho 💖</div>
+
+  <script>
+    const flashcards = [
+      { pergunta: "Quem descobriu o Brasil?", resposta: "Pedro Álvares Cabral" },
+      { pergunta: "O que é fotossíntese?", resposta: "Processo que as plantas usam para produzir energia." },
+      { pergunta: "Quanto é 7 x 8?", resposta: "56" },
+      { pergunta: "Qual é o maior planeta do sistema solar?", resposta: "Júpiter" },
+      { pergunta: "Quem foi Albert Einstein?", resposta: "Um cientista que criou a Teoria da Relatividade." }
+    ];
+
+    let indiceAtual = 0;
+    let pontuacao = 0;
+
+    const perguntaEl = document.getElementById("pergunta");
+    const respostaEl = document.getElementById("resposta");
+    const pontuacaoEl = document.getElementById("pontuacao");
+
+    function carregarFlashcard() {
+      const card = flashcards[indiceAtual];
+      perguntaEl.textContent = card.pergunta;
+      respostaEl.textContent = card.resposta;
+      respostaEl.style.display = "none";
+    }
+
+    function mostrarResposta() {
+      respostaEl.style.display = "block";
+    }
+
+    function respondeu(acertou) {
+      if (acertou) {
+        pontuacao++;
+      }
+      pontuacaoEl.textContent = pontuacao;
+      indiceAtual++;
+
+      if (indiceAtual < flashcards.length) {
+        carregarFlashcard();
+      } else {
+        perguntaEl.textContent = "Fim dos flashcards! 🎉";
+        respostaEl.textContent = "";
+        document.querySelector("button[onclick='mostrarResposta()']").style.display = "none";
+        document.querySelectorAll("button[onclick^='respondeu']").forEach(btn => btn.style.display = "none");
+      }
+    }
+
+    // Inicializa
+    carregarFlashcard();
+  </script>
+
 </body>
-
 </html>
