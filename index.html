@@ -1,75 +1,98 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Flashcard Quiz</title>
   <style>
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: 'Segoe UI', sans-serif;
       background-color: #121212;
       color: #e0e0e0;
       text-align: center;
-      padding: 30px;
+      padding: 40px;
       margin: 0;
     }
 
     h1 {
-      font-size: 2.8em;
       color: #64ffda;
-      margin-bottom: 15px;
-    }
-
-    .score {
-      font-size: 18px;
-      margin-bottom: 25px;
-      color: #a0a0a0;
-    }
-
-    .flashcard {
-      background-color: #1e1e1e;
-      border: 2px solid #64ffda;
-      border-radius: 12px;
-      max-width: 500px;
-      margin: 0 auto 30px;
-      padding: 25px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.6);
-    }
-
-    .pergunta {
-      font-size: 22px;
-      color: #ffffff;
+      font-size: 2.5em;
       margin-bottom: 20px;
     }
 
-    .resposta {
-      display: none;
-      margin: 15px 0;
-      color: #81c784;
+    .score {
+      margin-bottom: 20px;
+      font-size: 18px;
+      color: #a0a0a0;
+    }
+
+    .quiz-box {
+      background-color: #1e1e1e;
+      border: 2px solid #64ffda;
+      border-radius: 10px;
+      max-width: 600px;
+      margin: auto;
+      padding: 25px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+    }
+
+    .pergunta {
+      font-size: 20px;
+      margin-bottom: 20px;
+    }
+
+    .alternativas {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .alternativa {
+      background-color: #333;
+      color: #64ffda;
+      border: 1px solid #64ffda;
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .alternativa:hover {
+      background-color: #222;
+    }
+
+    .correta {
+      background-color: #2e7d32 !important;
+      border-color: #2e7d32 !important;
+      color: white !important;
+    }
+
+    .errada {
+      background-color: #c62828 !important;
+      border-color: #c62828 !important;
+      color: white !important;
+    }
+
+    .mensagem {
+      margin-top: 20px;
       font-weight: bold;
       font-size: 18px;
     }
 
-    button {
-      background-color: #333;
-      border: 1px solid #64ffda;
+    .recomecar {
+      margin-top: 30px;
+      background-color: transparent;
+      border: 2px solid #64ffda;
       color: #64ffda;
       padding: 10px 20px;
-      margin: 8px;
-      font-size: 16px;
       border-radius: 8px;
       cursor: pointer;
-      transition: background 0.3s, transform 0.2s;
+      font-size: 16px;
+      display: none;
     }
 
-    button:hover {
-      background-color: #222;
-      transform: scale(1.05);
-    }
-
-    .footer {
-      margin-top: 50px;
-      color: #888;
-      font-size: 13px;
+    .recomecar:hover {
+      background-color: #1a1a1a;
     }
   </style>
 </head>
@@ -78,63 +101,114 @@
   <h1>Flashcard Quiz 🌑</h1>
   <div class="score">Pontuação: <span id="pontuacao">0</span></div>
 
-  <div class="flashcard" id="flashcard">
+  <div class="quiz-box">
     <div class="pergunta" id="pergunta">Carregando pergunta...</div>
-    <div class="resposta" id="resposta"></div>
-    <button onclick="mostrarResposta()">Mostrar Resposta</button>
-    <br />
-    <button onclick="respondeu(true)">Acertar ✅</button>
-    <button onclick="respondeu(false)">Errar ❌</button>
+    <div class="alternativas" id="alternativas"></div>
+    <div class="mensagem" id="mensagem"></div>
+    <button class="recomecar" id="btnRecomecar" onclick="recomecarQuiz()">🔁 Recomeçar</button>
   </div>
 
-  <div class="footer">Feito na madruga com tema sombrio 🧠🌙</div>
-
   <script>
-    const flashcards = [
-      { pergunta: "Quem descobriu o Brasil?", resposta: "Pedro Álvares Cabral" },
-      { pergunta: "O que é fotossíntese?", resposta: "Processo que as plantas usam para produzir energia." },
-      { pergunta: "Quanto é 7 x 8?", resposta: "56" },
-      { pergunta: "Qual é o maior planeta do sistema solar?", resposta: "Júpiter" },
-      { pergunta: "Quem foi Albert Einstein?", resposta: "Um cientista que criou a Teoria da Relatividade." }
+    const perguntas = [
+      {
+        pergunta: "Quem descobriu o Brasil?",
+        alternativas: ["Cristóvão Colombo", "Pedro Álvares Cabral", "Dom Pedro II"],
+        correta: 1
+      },
+      {
+        pergunta: "Quanto é 9 x 6?",
+        alternativas: ["54", "63", "48"],
+        correta: 0
+      },
+      {
+        pergunta: "Qual é o maior planeta do sistema solar?",
+        alternativas: ["Terra", "Júpiter", "Saturno"],
+        correta: 1
+      },
+      {
+        pergunta: "O que é fotossíntese?",
+        alternativas: ["Processo de respiração das plantas", "Transformação da luz em energia pelas plantas", "Sistema de defesa vegetal"],
+        correta: 1
+      },
+      {
+        pergunta: "Quem foi Albert Einstein?",
+        alternativas: ["Pintor famoso", "Cantor austríaco", "Cientista da Teoria da Relatividade"],
+        correta: 2
+      }
     ];
 
     let indiceAtual = 0;
     let pontuacao = 0;
 
     const perguntaEl = document.getElementById("pergunta");
-    const respostaEl = document.getElementById("resposta");
+    const alternativasEl = document.getElementById("alternativas");
+    const mensagemEl = document.getElementById("mensagem");
     const pontuacaoEl = document.getElementById("pontuacao");
+    const btnRecomecar = document.getElementById("btnRecomecar");
 
-    function carregarFlashcard() {
-      const card = flashcards[indiceAtual];
-      perguntaEl.textContent = card.pergunta;
-      respostaEl.textContent = card.resposta;
-      respostaEl.style.display = "none";
+    function carregarPergunta() {
+      mensagemEl.textContent = "";
+      alternativasEl.innerHTML = "";
+
+      const atual = perguntas[indiceAtual];
+      perguntaEl.textContent = atual.pergunta;
+
+      atual.alternativas.forEach((alt, index) => {
+        const botao = document.createElement("button");
+        botao.className = "alternativa";
+        botao.textContent = alt;
+        botao.onclick = () => verificarResposta(index, botao);
+        alternativasEl.appendChild(botao);
+      });
     }
 
-    function mostrarResposta() {
-      respostaEl.style.display = "block";
-    }
+    function verificarResposta(selecionada, botaoClicado) {
+      const correta = perguntas[indiceAtual].correta;
+      const botoes = document.querySelectorAll(".alternativa");
 
-    function respondeu(acertou) {
-      if (acertou) {
+      botoes.forEach((btn, idx) => {
+        btn.disabled = true;
+        if (idx === correta) btn.classList.add("correta");
+      });
+
+      if (selecionada === correta) {
+        botaoClicado.classList.add("correta");
+        mensagemEl.textContent = "✅ Resposta correta!";
         pontuacao++;
-      }
-      pontuacaoEl.textContent = pontuacao;
-      indiceAtual++;
-
-      if (indiceAtual < flashcards.length) {
-        carregarFlashcard();
       } else {
-        perguntaEl.textContent = "Você completou o quiz! 🎉";
-        respostaEl.textContent = "";
-        document.querySelector("button[onclick='mostrarResposta()']").style.display = "none";
-        document.querySelectorAll("button[onclick^='respondeu']").forEach(btn => btn.style.display = "none");
+        botaoClicado.classList.add("errada");
+        mensagemEl.textContent = "❌ Resposta errada!";
       }
+
+      pontuacaoEl.textContent = pontuacao;
+
+      setTimeout(() => {
+        indiceAtual++;
+        if (indiceAtual < perguntas.length) {
+          carregarPergunta();
+        } else {
+          finalizarQuiz();
+        }
+      }, 1200);
     }
 
-    carregarFlashcard();
-  </script>
+    function finalizarQuiz() {
+      perguntaEl.textContent = "🎉 Quiz finalizado!";
+      alternativasEl.innerHTML = "";
+      mensagemEl.textContent = `Você acertou ${pontuacao} de ${perguntas.length}!`;
+      btnRecomecar.style.display = "inline-block";
+    }
 
+    function recomecarQuiz() {
+      indiceAtual = 0;
+      pontuacao = 0;
+      pontuacaoEl.textContent = "0";
+      btnRecomecar.style.display = "none";
+      carregarPergunta();
+    }
+
+    carregarPergunta();
+  </script>
 </body>
 </html>
+
